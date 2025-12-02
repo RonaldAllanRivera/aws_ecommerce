@@ -371,7 +371,7 @@ Single public GitHub repository (for example, `aws-ecommerce-microservices`).
    - Install Filament 4 in Catalog and Checkout services, and create a Filament admin user seeder per service (credentials to be provided via environment variables later).
    - Scaffold a Vue 3 + Vite frontend (optionally with TypeScript and Pinia) in the `frontend` directory.
 
-2. **Local environment and Docker**
+2. **[COMPLETED] Local environment and Docker**
    - Write Dockerfiles for the Laravel services (PHP-FPM) and an Nginx container to serve the APIs and Vue build.
    - Define a `docker-compose.yml` including: Catalog, Checkout, Email, Nginx, MySQL, Redis and Mailhog.
    - Create `.env` files for each Laravel service pointing to the Dockerized MySQL and Redis instances.

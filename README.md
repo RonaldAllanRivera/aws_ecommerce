@@ -253,9 +253,9 @@ Filament's default panel path is `/admin` per service.
 
 ---
 
-## 7. Phase 2: Docker-Based Local Environment (Planned)
+## 7. Phase 2: Docker-Based Local Environment (Completed)
 
-Phase 2 (in progress) will introduce a Docker-based local environment closely mirroring the AWS deployment:
+Phase 2 defines a Docker-based local environment closely mirroring the AWS deployment:
 
 - `docker-compose.yml` with services for:
   - `mysql` (shared instance with `catalog_db`, `checkout_db`, `email_db`).
@@ -266,13 +266,59 @@ Phase 2 (in progress) will introduce a Docker-based local environment closely mi
 - Dockerfiles for Laravel services and Nginx.
 - Updated `.env` for each service to use the MySQL container and appropriate DB credentials.
 
-Once Phase 2 is completed, the recommended local workflow will be:
+With Phase 2 completed, the recommended local workflow is:
 
 ```bash
 docker compose up --build
 ```
 
 and all services will be reachable via Nginx on a single host/port.
+
+### 7.1 Running the full stack with Docker
+
+From the project root:
+
+```bash
+docker compose up --build
+```
+
+This will:
+
+- Start MySQL and initialize `catalog_db`, `checkout_db`, and `email_db` (plus users) using the SQL script in `docker/mysql/init/`.
+- Start Redis and Mailhog.
+- Build and run the three Laravel PHP-FPM containers.
+- Start Nginx on `http://localhost:8080`.
+
+Once the stack is running, the main local endpoints are:
+
+- Catalog service
+  - App: `http://localhost:8080/catalog/`
+  - Health: `http://localhost:8080/catalog/health`
+- Checkout service
+  - App: `http://localhost:8080/checkout/`
+  - Health: `http://localhost:8080/checkout/health`
+- Email service
+  - App: `http://localhost:8080/email/`
+  - Health: `http://localhost:8080/email/health`
+- Mailhog UI
+  - `http://localhost:8025`
+
+### 7.2 Running migrations and seeders against MySQL
+
+After the containers are up, run the migrations and seeders **inside** the app containers:
+
+```bash
+# Catalog service (includes Filament admin seeder)
+docker compose exec catalog-app php artisan migrate --seed
+
+# Checkout service (includes Filament admin seeder)
+docker compose exec checkout-app php artisan migrate --seed
+
+# Email service
+docker compose exec email-app php artisan migrate
+```
+
+These commands apply the schema to the MySQL databases defined in `docker/mysql/init/01-init-databases.sql` and create the default Filament admin users using the `.env` credentials.
 
 ---
 
