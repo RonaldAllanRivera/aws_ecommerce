@@ -249,7 +249,7 @@ Running `php artisan db:seed` will create or update the admin user accordingly.
 
 These are for local development only and must be changed for any shared or deployed environment.
 
-Filament's default panel path is `/admin` per service.
+Filament's default panel path is `/admin` per service. In the Docker-based local environment, the Catalog admin panel is available at `http://localhost:8080/catalog/admin` behind Nginx.
 
 ---
 
@@ -320,7 +320,7 @@ docker compose exec email-app php artisan migrate
 
 These commands apply the schema to the MySQL databases defined in `docker/mysql/init/01-init-databases.sql` and create the default Filament admin users using the `.env` credentials.
 
-### 7.3 Catalog APIs (Phase 3  in progress)
+### 7.3 Catalog APIs (Phase 3 – in progress)
 
 As part of Phase 3, the Catalog service exposes JSON APIs via Nginx:
 
@@ -334,6 +334,12 @@ As part of Phase 3, the Catalog service exposes JSON APIs via Nginx:
   - `GET /catalog/api/categories`
 
 The Catalog database is seeded with sample categories and products (including placeholder images) via `CatalogSampleDataSeeder`.
+
+**Admin panel (Catalog)**
+
+- URL (Docker, local): `http://localhost:8080/catalog/admin`
+- Guard: default `web` guard with Filament 4
+- Credentials: same as the Catalog admin in section 6.2
 
 ---
 

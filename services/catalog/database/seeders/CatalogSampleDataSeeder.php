@@ -108,7 +108,7 @@ class CatalogSampleDataSeeder extends Seeder
                     'sort_order' => 0,
                 ],
                 [
-                    'url' => 'https://via.placeholder.com/800?text=' . urlencode($product->name),
+                    'url' => 'https://placehold.co/600x400?text=' . urlencode($product->name),
                     'alt_text' => $product->name,
                 ],
             );

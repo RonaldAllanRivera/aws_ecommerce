@@ -25,7 +25,8 @@ class FilamentAdminUserSeeder extends Seeder
             ['email' => $email],
             [
                 'name' => 'Admin',
-                'password' => bcrypt($password),
+                // The "hashed" cast on the User model will hash this value.
+                'password' => $password,
             ],
         );
 

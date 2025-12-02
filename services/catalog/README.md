@@ -57,3 +57,39 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+---
+
+## Project-specific notes: Catalog service
+
+This Laravel application is used as the **Catalog microservice** in the AWS E-commerce Microservices project. It owns products, categories, inventory, and product images, and exposes read-only APIs plus a Filament 4 admin panel.
+
+### Local Docker (development)
+
+When running the full stack via Docker from the project root:
+
+- Base URL (through Nginx): `http://localhost:8080/catalog/`
+- Health endpoint: `http://localhost:8080/catalog/health`
+
+Key JSON APIs (proxied by Nginx):
+
+- `GET /catalog/api/products`
+- `GET /catalog/api/products/{slug}`
+- `GET /catalog/api/categories`
+
+### Filament admin (Catalog)
+
+The Catalog admin panel is implemented with **Filament 4**.
+
+- Panel URL (Docker, local): `http://localhost:8080/catalog/admin`
+- Guard: Laravel `web` guard with `App\Models\User` implementing `FilamentUser`
+- Default admin user is created by `FilamentAdminUserSeeder` using `.env` values:
+  - `FILAMENT_ADMIN_EMAIL`
+  - `FILAMENT_ADMIN_PASSWORD`
+
+For this project, the default development credentials are:
+
+- Email: `jaeron.rivera@gmail.com`
+- Password: `123456789`
+
+These values are for local development only and must be changed for any shared or deployed environment.

@@ -15,3 +15,11 @@ All notable changes to this project will be documented in this file.
   - `GET /catalog/api/products/{slug}` for product detail.
   - `GET /catalog/api/categories` for listing categories.
 - Documentation updates in `PLAN.md` and `README.md` to reflect completed Phase 2 and current Catalog capabilities.
+
+### Changed
+- Updated `CatalogSampleDataSeeder` to use `https://placehold.co` image URLs for sample product images.
+
+### Fixed
+- Resolved Filament 4 asset and Livewire 404s for the Catalog admin panel behind Nginx (`/catalog/admin`).
+- Fixed `419 Page Expired` errors on Filament login by adjusting session, CSRF, and Filament panel middleware configuration for the Catalog service.
+- Updated Filament table actions to use the `Filament\Actions` namespace and cleared stale compiled views that caused Blade parse errors on Catalog admin list pages.
