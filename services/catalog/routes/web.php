@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -15,4 +17,10 @@ Route::get('/catalog/health', function () {
         'status' => 'ok',
         'service' => 'catalog',
     ]);
+});
+
+Route::prefix('catalog/api')->group(function () {
+    Route::get('products', [ProductController::class, 'index']);
+    Route::get('products/{slug}', [ProductController::class, 'show']);
+    Route::get('categories', [CategoryController::class, 'index']);
 });

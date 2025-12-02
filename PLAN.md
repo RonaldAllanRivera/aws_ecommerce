@@ -379,10 +379,10 @@ Single public GitHub repository (for example, `aws-ecommerce-microservices`).
    - Confirm that all containers start successfully and that the basic health endpoints for each service are reachable from the host.
 
 3. **Catalog service implementation**
-   - Define migrations, models and relationships for Product, Category, Inventory, ProductImage, with appropriate indexes and FULLTEXT indexes as described in section 4.4.
-   - Seed some sample products and categories for local testing.
-   - Implement REST APIs for product listing, product detail and category listing, including filtering, sorting and pagination.
-   - Add a basic search endpoint using MySQL FULLTEXT and relevance ordering.
+   - [COMPLETED] Define migrations, models and relationships for Product, Category, Inventory, ProductImage, with appropriate indexes and FULLTEXT indexes as described in section 4.4.
+   - [COMPLETED] Seed some sample products and categories for local testing.
+   - [COMPLETED] Implement REST APIs for product listing, product detail and category listing, including filtering, sorting and pagination.
+   - [COMPLETED] Add a basic search endpoint using MySQL FULLTEXT and relevance ordering.
    - Integrate Filament 4 admin resources for managing products, categories, inventory and images.
    - Add unit and feature tests for key Catalog flows (list products, view detail, basic search).
 

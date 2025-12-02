@@ -320,6 +320,21 @@ docker compose exec email-app php artisan migrate
 
 These commands apply the schema to the MySQL databases defined in `docker/mysql/init/01-init-databases.sql` and create the default Filament admin users using the `.env` credentials.
 
+### 7.3 Catalog APIs (Phase 3  in progress)
+
+As part of Phase 3, the Catalog service exposes JSON APIs via Nginx:
+
+- List products (paginated, with filters):
+  - `GET /catalog/api/products`
+  - Query params: `search`, `category`, `min_price`, `max_price`, `sort`, `per_page`
+  - On MySQL, `search` uses a FULLTEXT index on `name` and `description` (with relevance ordering by default)
+- Product detail (by slug):
+  - `GET /catalog/api/products/{slug}`
+- List categories:
+  - `GET /catalog/api/categories`
+
+The Catalog database is seeded with sample categories and products (including placeholder images) via `CatalogSampleDataSeeder`.
+
 ---
 
 ## 8. AWS Deployment (High Level)
