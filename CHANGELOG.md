@@ -15,6 +15,7 @@ All notable changes to this project will be documented in this file.
   - `GET /catalog/api/products/{slug}` for product detail.
   - `GET /catalog/api/categories` for listing categories.
 - Documentation updates in `PLAN.md` and `README.md` to reflect completed Phase 2 and current Catalog capabilities.
+ - Feature tests for Catalog API endpoints (product listing, product detail by slug, basic search), including `Tests\\CreatesApplication` and updated `Tests\\TestCase` for Laravel 12 test bootstrapping.
 
 ### Changed
 - Updated `CatalogSampleDataSeeder` to use `https://placehold.co` image URLs for sample product images.

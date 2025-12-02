@@ -384,7 +384,7 @@ Single public GitHub repository (for example, `aws-ecommerce-microservices`).
    - [COMPLETED] Implement REST APIs for product listing, product detail and category listing, including filtering, sorting and pagination.
    - [COMPLETED] Add a basic search endpoint using MySQL FULLTEXT and relevance ordering.
    - [COMPLETED] Integrate Filament 4 admin resources for managing products, categories, inventory and images.
-   - Add unit and feature tests for key Catalog flows (list products, view detail, basic search).
+   - [COMPLETED] Add unit and feature tests for key Catalog flows (list products, view detail, basic search).
 
 4. **Checkout service implementation**
    - Define migrations and models for Cart, CartItem, Order, OrderItem and Payment, with the indexes needed for reporting and order history (section 4.4).

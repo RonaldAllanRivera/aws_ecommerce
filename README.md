@@ -320,7 +320,7 @@ docker compose exec email-app php artisan migrate
 
 These commands apply the schema to the MySQL databases defined in `docker/mysql/init/01-init-databases.sql` and create the default Filament admin users using the `.env` credentials.
 
-### 7.3 Catalog APIs (Phase 3 – in progress)
+### 7.3 Catalog APIs (Phase 3 – completed)
 
 As part of Phase 3, the Catalog service exposes JSON APIs via Nginx:
 
@@ -392,7 +392,7 @@ Implementation is tracked in `PLAN.md`. High-level phases:
 2. **Local Docker environment**
    - Dockerfiles, docker-compose.yml, MySQL/Redis/Mailhog, Nginx reverse proxy.
 3. **Service features**
-   - Catalog: products, categories, inventory, search.
+  - Catalog: products, categories, inventory, search, API tests.
    - Checkout: cart, orders, SQS event publishing.
    - Email: SQS consumption, SES integration, logging.
 4. **Frontend integration**
