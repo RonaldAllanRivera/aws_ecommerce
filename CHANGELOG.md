@@ -14,9 +14,12 @@ All notable changes to this project will be documented in this file.
   - `POST /checkout/api/place-order` to create orders and payments from carts.
   - `GET /checkout/api/orders/{orderNumber}` to retrieve order summaries.
  - Integration between Checkout and Catalog for SKU-based product lookups, canonical pricing, and product name snapshots on order items.
+ - Queue job `OrderCreated` dispatched after successful `place-order`, targeting the logical `order-events` queue for downstream processing.
+ - Feature tests for the Checkout `place-order` endpoint covering happy path, price-change, and out-of-stock business validation scenarios.
 
 ### Changed
-- Configured CSRF middleware in the Checkout service to exclude `checkout/*` paths, enabling stateless JSON API calls from Postman and the frontend.
+ - Configured CSRF middleware in the Checkout service to exclude `checkout/*` paths, enabling stateless JSON API calls from Postman and the frontend.
+ - Adjusted Checkout logging and queue configuration for the Docker-based local environment to log to stderr and use the synchronous queue driver, avoiding missing Redis extension and log file permission issues during API testing while keeping SQS as the target in AWS.
 
 ## 2025-12-02
 

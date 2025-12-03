@@ -341,7 +341,7 @@ The Catalog database is seeded with sample categories and products (including pl
 - Guard: default `web` guard with Filament 4
 - Credentials: same as the Catalog admin in section 6.2
 
-### 7.4 Checkout APIs (Phase 4 – in progress)
+### 7.4 Checkout APIs (Phase 4 – backend APIs completed)
 
 As part of Phase 4, the Checkout service exposes JSON APIs via Nginx:
 
@@ -355,7 +355,7 @@ As part of Phase 4, the Checkout service exposes JSON APIs via Nginx:
   - `POST /checkout/api/place-order` – create an order and payment from the current cart.
   - `GET /checkout/api/orders/{orderNumber}` – retrieve an order summary and payment details.
 
-Cart items and orders use canonical pricing and product names resolved from the Catalog service via SKU-based lookups, and snapshot these values into `CartItem` and `OrderItem` records.
+Cart items and orders use canonical pricing and product names resolved from the Catalog service via SKU-based lookups, and snapshot these values into `CartItem` and `OrderItem` records. The `place-order` endpoint revalidates prices and available stock against the Catalog service before creating an order and payment, and on success dispatches an `OrderCreated` message to the logical `order-events` queue for the Email service to consume. In the Docker-based local environment, Checkout uses Laravel's `sync` queue driver and logs to stderr so you can see `OrderCreated` activity directly in container logs; in AWS this will be switched to SQS (and CloudWatch or file-based logging) via environment configuration.
 
 ---
 

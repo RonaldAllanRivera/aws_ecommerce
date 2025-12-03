@@ -115,7 +115,7 @@ Single public GitHub repository (for example, `aws-ecommerce-microservices`).
   - Manage shopping cart and checkout process.
   - Create orders, calculate totals, taxes and shipping (simplified at first).
   - Integrate with payment provider (initially stub with test provider or manual status).
-  - Publish `OrderCreated` events to SQS for the Email service.
+  - Publish `OrderCreated` events to SQS for the Email service (simulated via Laravel's queue system in the local Docker environment using the `sync` driver, with SQS wired in the AWS environment).
 
 - **Core entities**
   - `Cart`: id, user id (nullable for guest), session token, status.
@@ -390,10 +390,10 @@ Single public GitHub repository (for example, `aws-ecommerce-microservices`).
    - [COMPLETED] Define migrations and models for Cart, CartItem, Order, OrderItem and Payment, with the indexes needed for reporting and order history (section 4.4).
    - [COMPLETED] Implement cart APIs (create cart, add item, update item, remove item, get cart) using token-based guest carts.
    - [COMPLETED] Integrate with the Catalog service to validate prices at checkout time using SKU-based product lookups and snapshots.
-   - Implement the `place-order` endpoint: create order, snapshot product data, handle a mock payment provider and set order status.
-   - Publish `OrderCreated` messages to the SQS queue with the full order summary payload.
+   - [COMPLETED] Implement the `place-order` endpoint: create order, snapshot product data, handle a mock payment provider and set order status.
+   - [COMPLETED] Publish `OrderCreated` messages to the SQS queue (logical `order-events` queue) with a summarized order payload.
    - Integrate Filament 4 for orders and payments (list, filter, view details).
-   - Add tests for cart behavior, order creation and SQS event publishing.
+   - Add tests for cart behavior, order creation and SQS event publishing (place-order feature tests added; broader cart and admin coverage still pending).
 
 5. **Email service implementation**
    - Configure the Email service to consume messages from the SQS `order-events` queue using Laravel queues.
