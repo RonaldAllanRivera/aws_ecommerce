@@ -4,11 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Models\Cart;
 use App\Models\CartItem;
+use App\Services\CatalogClient;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class CartController extends Controller
 {
+    public function __construct(private CatalogClient $catalog)
+    {
+    }
+
     public function store(Request $request)
     {
         $token = $request->input('cart_token') ?? $request->query('cart_token');
@@ -64,28 +69,38 @@ class CartController extends Controller
     {
         $data = $request->validate([
             'cart_token' => 'required|string',
-            'product_id' => 'required|integer',
+            'product_sku' => 'required|string',
             'quantity' => 'required|integer|min:1',
-            'unit_price' => 'required|numeric',
         ]);
 
         $cart = Cart::where('token', $data['cart_token'])
             ->where('status', 'open')
             ->firstOrFail();
 
+        try {
+            $product = $this->catalog->findProductBySku($data['product_sku']);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'message' => 'Unable to add item: '.$e->getMessage(),
+            ], 422);
+        }
+
+        $productId = $product['id'];
+        $unitPrice = $product['price'];
+
         $item = $cart->items()
-            ->where('product_id', $data['product_id'])
+            ->where('product_id', $productId)
             ->first();
 
         if ($item) {
             $item->quantity += $data['quantity'];
-            $item->unit_price_snapshot = $data['unit_price'];
+            $item->unit_price_snapshot = $unitPrice;
             $item->save();
         } else {
             $cart->items()->create([
-                'product_id' => $data['product_id'],
+                'product_id' => $productId,
                 'quantity' => $data['quantity'],
-                'unit_price_snapshot' => $data['unit_price'],
+                'unit_price_snapshot' => $unitPrice,
             ]);
         }
 

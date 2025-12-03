@@ -389,7 +389,7 @@ Single public GitHub repository (for example, `aws-ecommerce-microservices`).
 4. **Checkout service implementation**
    - [COMPLETED] Define migrations and models for Cart, CartItem, Order, OrderItem and Payment, with the indexes needed for reporting and order history (section 4.4).
    - [COMPLETED] Implement cart APIs (create cart, add item, update item, remove item, get cart) using token-based guest carts.
-   - Integrate with the Catalog service to validate prices and stock at checkout time.
+   - [COMPLETED] Integrate with the Catalog service to validate prices at checkout time using SKU-based product lookups and snapshots.
    - Implement the `place-order` endpoint: create order, snapshot product data, handle a mock payment provider and set order status.
    - Publish `OrderCreated` messages to the SQS queue with the full order summary payload.
    - Integrate Filament 4 for orders and payments (list, filter, view details).

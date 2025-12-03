@@ -17,6 +17,14 @@ class ProductController extends Controller
             ])
             ->where('status', 'active');
 
+        if ($id = $request->query('id')) {
+            $query->whereKey($id);
+        }
+
+        if ($sku = $request->query('sku')) {
+            $query->where('sku', $sku);
+        }
+
         $useRelevanceSort = false;
 
         if ($search = $request->query('search')) {

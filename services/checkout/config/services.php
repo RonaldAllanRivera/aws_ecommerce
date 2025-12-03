@@ -35,4 +35,9 @@ return [
         ],
     ],
 
+    'catalog' => [
+        // In Docker this defaults to the nginx container; override via CATALOG_SERVICE_URL if needed.
+        'base_url' => env('CATALOG_SERVICE_URL', 'http://nginx'),
+    ],
+
 ];

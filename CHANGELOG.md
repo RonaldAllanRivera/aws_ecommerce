@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
   - `DELETE /checkout/api/cart/items/{id}` to remove cart items.
   - `POST /checkout/api/place-order` to create orders and payments from carts.
   - `GET /checkout/api/orders/{orderNumber}` to retrieve order summaries.
+ - Integration between Checkout and Catalog for SKU-based product lookups, canonical pricing, and product name snapshots on order items.
 
 ### Changed
 - Configured CSRF middleware in the Checkout service to exclude `checkout/*` paths, enabling stateless JSON API calls from Postman and the frontend.

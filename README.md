@@ -348,12 +348,14 @@ As part of Phase 4, the Checkout service exposes JSON APIs via Nginx:
 - Cart endpoints:
   - `POST /checkout/api/cart` – create or reuse an open cart based on a `cart_token`.
   - `GET /checkout/api/cart` – retrieve the current cart by `cart_token`.
-  - `POST /checkout/api/cart/items` – add an item to the cart.
+  - `POST /checkout/api/cart/items` – add an item to the cart by `product_sku`.
   - `PUT /checkout/api/cart/items/{id}` – update a cart item's quantity.
   - `DELETE /checkout/api/cart/items/{id}` – remove a cart item.
 - Checkout endpoints:
   - `POST /checkout/api/place-order` – create an order and payment from the current cart.
   - `GET /checkout/api/orders/{orderNumber}` – retrieve an order summary and payment details.
+
+Cart items and orders use canonical pricing and product names resolved from the Catalog service via SKU-based lookups, and snapshot these values into `CartItem` and `OrderItem` records.
 
 ---
 
