@@ -1,6 +1,21 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
+## 2025-12-03
+
+### Added
+- Checkout database schema and Eloquent models for `Cart`, `CartItem`, `Order`, `OrderItem`, and `Payment`.
+- Checkout JSON APIs for cart and checkout flows:
+  - `POST /checkout/api/cart` to create or reuse an open cart.
+  - `GET /checkout/api/cart` to retrieve the current cart by `cart_token`.
+  - `POST /checkout/api/cart/items` to add items to a cart.
+  - `PUT /checkout/api/cart/items/{id}` to update cart item quantities.
+  - `DELETE /checkout/api/cart/items/{id}` to remove cart items.
+  - `POST /checkout/api/place-order` to create orders and payments from carts.
+  - `GET /checkout/api/orders/{orderNumber}` to retrieve order summaries.
+
+### Changed
+- Configured CSRF middleware in the Checkout service to exclude `checkout/*` paths, enabling stateless JSON API calls from Postman and the frontend.
 
 ## 2025-12-02
 

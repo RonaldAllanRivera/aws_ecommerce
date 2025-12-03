@@ -387,8 +387,8 @@ Single public GitHub repository (for example, `aws-ecommerce-microservices`).
    - [COMPLETED] Add unit and feature tests for key Catalog flows (list products, view detail, basic search).
 
 4. **Checkout service implementation**
-   - Define migrations and models for Cart, CartItem, Order, OrderItem and Payment, with the indexes needed for reporting and order history (section 4.4).
-   - Implement cart APIs (create cart, add item, update item, remove item, get cart) using token-based guest carts.
+   - [COMPLETED] Define migrations and models for Cart, CartItem, Order, OrderItem and Payment, with the indexes needed for reporting and order history (section 4.4).
+   - [COMPLETED] Implement cart APIs (create cart, add item, update item, remove item, get cart) using token-based guest carts.
    - Integrate with the Catalog service to validate prices and stock at checkout time.
    - Implement the `place-order` endpoint: create order, snapshot product data, handle a mock payment provider and set order status.
    - Publish `OrderCreated` messages to the SQS queue with the full order summary payload.
