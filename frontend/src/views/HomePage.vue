@@ -29,8 +29,14 @@ async function toggleCart(product) {
   if (existing) {
     await cart.removeItem(existing.id)
   } else {
+    if (isOutOfStock(product)) return
     await cart.addItem(product.sku, 1)
   }
+}
+
+function isOutOfStock(product) {
+  const available = product?.inventory?.quantity_available
+  return typeof available === 'number' && available <= 0
 }
 </script>
 
@@ -94,8 +100,20 @@ async function toggleCart(product) {
             >
               {{ product.name }}
             </RouterLink>
-            <p class="mb-4 text-sm text-slate-600">
+            <p class="mb-1 text-sm text-slate-600">
               {{ product.price }}
+            </p>
+            <p
+              v-if="isOutOfStock(product)"
+              class="mb-3 text-xs font-medium uppercase tracking-wide text-red-600"
+            >
+              Out of stock
+            </p>
+            <p
+              v-else
+              class="mb-3 text-xs text-slate-500"
+            >
+              In stock
             </p>
           <div class="mt-auto flex justify-between gap-2">
             <RouterLink
@@ -107,15 +125,23 @@ async function toggleCart(product) {
             <button
               type="button"
               class="inline-flex flex-1 items-center justify-center rounded-md px-3 py-1 text-xs font-medium disabled:opacity-60"
-              :class="
+              :class="[
                 isInCart(product)
                   ? 'border border-red-300 bg-white text-red-700 hover:bg-red-50'
-                  : 'bg-slate-900 text-white hover:bg-slate-800'
-              "
-              :disabled="cart.loading"
+                  : isOutOfStock(product)
+                    ? 'border border-slate-200 bg-slate-100 text-slate-400 cursor-not-allowed'
+                    : 'bg-slate-900 text-white hover:bg-slate-800',
+              ]"
+              :disabled="cart.loading || (!isInCart(product) && isOutOfStock(product))"
               @click="toggleCart(product)"
             >
-              {{ isInCart(product) ? 'Remove from cart' : 'Add to cart' }}
+              {{
+                isInCart(product)
+                  ? 'Remove from cart'
+                  : isOutOfStock(product)
+                    ? 'Out of stock'
+                    : 'Add to cart'
+              }}
             </button>
           </div>
           </div>

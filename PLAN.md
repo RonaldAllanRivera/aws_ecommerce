@@ -410,8 +410,8 @@ Single public GitHub repository (for example, `aws-ecommerce-microservices`).
    - [COMPLETED] Set up Vue Router, layout components and base pages (home, product list, product detail, cart, checkout, order confirmation) using Vue 3 + Vite and TailwindCSS.
    - [COMPLETED] Implement Pinia stores for catalog and cart state, including persistence of the cart token and a simple Add/Remove-from-cart UX shared between the product grid and product detail pages.
    - [COMPLETED] Integrate with Catalog and Checkout APIs for product browsing, cart operations and placing orders, including host-aware Axios clients and CORS-friendly dev setup (Vite on `http://localhost:5173` calling Nginx on `http://localhost:8080` and `http://checkout.localhost:8080`).
-   - [TODO] Refine client-side form validation and clear error handling for out-of-stock and payment errors.
-   - [TODO] Build the production Vue bundle and configure Nginx in Docker to serve the SPA and proxy API calls.
+   - [COMPLETED] Refine client-side form validation and clear error handling for out-of-stock, price-change and payment errors, including redirecting stock/price failures from Checkout back to the Cart page.
+   - [COMPLETED] Build the production Vue bundle and configure Nginx in Docker to serve the SPA from `frontend/dist` on `http://localhost:8080` while proxying Catalog and Checkout API calls.
 
 7. **AWS infrastructure and deployment**
    - Author CloudFormation templates for networking, compute database (single EC2 with Docker and MySQL container) and application stack (SQS queue, IAM roles and SES permissions).

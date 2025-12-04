@@ -65,16 +65,20 @@ function goToCheckout() {
         Loading cart...
       </div>
 
-      <div v-else-if="cart.error" class="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
-        {{ cart.error }}
-      </div>
-
       <div v-else-if="!cart.cart || !cart.cart.items || cart.cart.items.length === 0" class="py-8 text-sm text-slate-600">
         Your cart is empty.
       </div>
 
-      <div v-else class="grid gap-6 md:grid-cols-[2fr,1fr]">
-        <section class="space-y-4">
+      <div v-else class="space-y-4">
+        <div
+          v-if="cart.error"
+          class="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700"
+        >
+          {{ cart.error }}
+        </div>
+
+        <div class="grid gap-6 md:grid-cols-[2fr,1fr]">
+          <section class="space-y-4">
           <article
             v-for="item in cart.cart.items"
             :key="item.id"
@@ -128,6 +132,7 @@ function goToCheckout() {
             Proceed to checkout
           </button>
         </aside>
+        </div>
       </div>
 
       <p class="mt-6 text-xs text-slate-500">

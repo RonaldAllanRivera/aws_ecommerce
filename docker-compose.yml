@@ -119,6 +119,7 @@ services:
       - ./services/catalog:/var/www/catalog
       - ./services/checkout:/var/www/checkout
       - ./services/email:/var/www/email
+      - ./frontend/dist:/var/www/frontend:ro
 
 volumes:
   mysql_data:

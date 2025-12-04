@@ -10,6 +10,11 @@ const cart = useCartStore()
 
 const product = computed(() => catalog.currentProduct)
 
+const outOfStock = computed(() => {
+  const available = product.value?.inventory?.quantity_available
+  return typeof available === 'number' && available <= 0
+})
+
 onMounted(async () => {
   const slug = route.params.slug
   if (!product.value || product.value.slug !== slug) {
@@ -33,6 +38,7 @@ async function toggleCart() {
   if (existing) {
     await cart.removeItem(existing.id)
   } else {
+    if (outOfStock.value) return
     await cart.addItem(product.value.sku, 1)
   }
 }
@@ -72,22 +78,42 @@ async function toggleCart() {
           {{ product.name }}
         </h1>
         <p class="mb-4 text-sm text-slate-600">{{ product.description }}</p>
-        <p class="mb-6 text-lg font-semibold text-slate-900">
+        <p class="mb-1 text-lg font-semibold text-slate-900">
           {{ product.price }}
+        </p>
+        <p
+          v-if="outOfStock"
+          class="mb-4 text-xs font-medium uppercase tracking-wide text-red-600"
+        >
+          Out of stock
+        </p>
+        <p
+          v-else
+          class="mb-4 text-xs text-slate-500"
+        >
+          In stock
         </p>
 
         <button
           type="button"
           class="inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium disabled:opacity-60"
-          :class="
+          :class="[
             isInCart()
               ? 'border border-red-300 bg-white text-red-700 hover:bg-red-50'
-              : 'bg-slate-900 text-white hover:bg-slate-800'
-          "
-          :disabled="cart.loading"
+              : outOfStock
+                ? 'border border-slate-200 bg-slate-100 text-slate-400 cursor-not-allowed'
+                : 'bg-slate-900 text-white hover:bg-slate-800',
+          ]"
+          :disabled="cart.loading || (!isInCart() && outOfStock)"
           @click="toggleCart"
         >
-          {{ isInCart() ? 'Remove from cart' : 'Add to cart' }}
+          {{
+            isInCart()
+              ? 'Remove from cart'
+              : outOfStock
+                ? 'Out of stock'
+                : 'Add to cart'
+          }}
         </button>
       </section>
 

@@ -17,9 +17,12 @@ All notable changes to this project will be documented in this file.
 - Vue 3 + Vite SPA frontend with TailwindCSS, consuming Catalog and Checkout APIs for product listing/detail, cart, checkout and order confirmation flows (Phase 6).
 - Pinia stores for Catalog and Checkout cart state, including cart token persistence and Add/Remove from cart UX on product grid and detail pages.
 - Frontend Axios configuration and CORS/host-based routing adjustments to support `http://localhost:5173` calling `http://localhost:8080` (Catalog) and `http://checkout.localhost:8080` (Checkout) in the Docker-based local environment.
+- Inventory-aware out-of-stock UX in the Vue SPA, driven by Catalog `inventory.quantity_available` (including a sample product seeded with zero stock), disabling new adds while still allowing removal from the cart.
+- Checkout UX improvements: client-side form validation, clearer error messages for out-of-stock, price-change and payment failures, and automatic redirect from the Checkout page back to the Cart page on stock/price validation errors.
 
 ### Changed
 - Nginx configuration and Checkout/Catalog `.env` settings to use host-based routing (`catalog.localhost`, `checkout.localhost`) and separate session cookies per service, resolving Livewire checksum issues between the Catalog and Checkout Filament panels.
+- Docker Compose + Nginx configuration to optionally serve the built Vue SPA from `frontend/dist` on `http://localhost:8080` while proxying `/catalog/*` and `/checkout/*` API calls to the respective Laravel services.
 
 ## 2025-12-03
 

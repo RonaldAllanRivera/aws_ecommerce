@@ -56,6 +56,7 @@ The system is built from three Laravel 12 microservices (Catalog, Checkout, Emai
     - Catalog: `http://localhost:8080/catalog/api/*` in Docker.
     - Checkout: `http://checkout.localhost:8080/checkout/api/*` in Docker.
   - Uses Pinia for catalog and cart state, including cart token persistence and shared Add/Remove-from-cart UX between the product grid and product detail pages.
+  - Inventory-aware out-of-stock UX based on Catalog `inventory.quantity_available`, disabling Add to cart for zero-stock products and surfacing clearer messaging on product list/detail pages and during checkout validation.
 
 ### 2.3 Data & Infrastructure
 
@@ -329,6 +330,7 @@ Make sure your hosts file maps the Docker Nginx hosts:
 ```
 
 In production, the built SPA will be served by Nginx on the same origin as the APIs, so CORS can be restricted to that origin.
+The local Docker `nginx` container is also configured to serve a built `frontend/dist` bundle from `/var/www/frontend` on `http://localhost:8080` when you run `npm run build` and restart the stack.
 
 ### 7.2 Running migrations and seeders against MySQL
 

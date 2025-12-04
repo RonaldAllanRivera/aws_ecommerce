@@ -72,7 +72,7 @@ class CatalogSampleDataSeeder extends Seeder
                 'price' => 24.99,
                 'status' => 'active',
                 'categories' => ['clothing'],
-                'quantity_available' => 200,
+                'quantity_available' => 0,
             ],
         ];
 

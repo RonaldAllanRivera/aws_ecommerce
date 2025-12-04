@@ -139,6 +139,7 @@ The Vue SPA is built with Vite and served by the same Nginx instance that fronts
 3. Configure Nginx on EC2 so that:
    - `/` and SPA routes serve the built `index.html` from the Vue build.
    - API routes proxy to the Laravel services (for example `/catalog/*`, `/checkout/*`).
+   - The local `docker-compose.yml` and `docker/nginx/nginx.conf` already follow this pattern by mounting `frontend/dist` into `/var/www/frontend` and defining a `localhost` server block that serves the SPA while proxying `/catalog/` and `/checkout/` requests to the respective Laravel containers.
 
 4. Set the frontend environment for production builds so Axios points at the EC2 host (same origin as Nginx):
 

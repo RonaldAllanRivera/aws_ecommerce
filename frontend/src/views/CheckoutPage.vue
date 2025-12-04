@@ -16,9 +16,40 @@ const form = reactive({
 const state = reactive({
   submitting: false,
   error: null,
+  fieldErrors: {},
 })
 
+function validate() {
+  state.error = null
+  state.fieldErrors = {}
+
+  if (!form.customer_name.trim()) {
+    state.fieldErrors.customer_name = 'Name is required.'
+  }
+
+  if (!form.email.trim()) {
+    state.fieldErrors.email = 'Email is required.'
+  } else if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(form.email)) {
+    state.fieldErrors.email = 'Enter a valid email address.'
+  }
+
+  if (!form.shipping_address.trim()) {
+    state.fieldErrors.shipping_address = 'Shipping address is required.'
+  }
+
+  if (Object.keys(state.fieldErrors).length > 0) {
+    state.error = 'Please fix the highlighted fields.'
+    return false
+  }
+
+  return true
+}
+
 async function submit() {
+  if (!validate()) {
+    return
+  }
+
   state.error = null
   state.submitting = true
   try {
@@ -34,7 +65,29 @@ async function submit() {
 
     router.push({ name: 'order-confirmation', params: { orderNumber: order.order_number } })
   } catch (e) {
-    state.error = e?.message || 'Failed to place order.'
+    const message = e?.message || 'Failed to place order.'
+
+    const isStockError =
+      message.includes('out of stock') || message.includes('enough quantity')
+    const isPriceChangeError = message.includes('price has changed')
+
+    if (isStockError || isPriceChangeError) {
+      cart.error = isStockError
+        ? 'Some items are no longer available in the desired quantity. Please review your cart and try again.'
+        : 'Product prices have changed since you added items to your cart. Please review your cart and confirm the new prices.'
+
+      router.push({ name: 'cart' })
+      return
+    }
+
+    if (message.includes('Cart is empty')) {
+      state.error = 'Your cart is empty. Please add items before checking out.'
+    } else if (message.toLowerCase().includes('payment')) {
+      state.error =
+        'We could not process your payment. No charges were made. Please verify your payment details and try again.'
+    } else {
+      state.error = message
+    }
   } finally {
     state.submitting = false
   }
@@ -73,9 +126,14 @@ async function submit() {
             <input
               v-model="form.customer_name"
               type="text"
-              required
-              class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-slate-500 focus:outline-none"
+              :class="[
+                'w-full rounded-md border px-3 py-2 text-sm focus:border-slate-500 focus:outline-none',
+                state.fieldErrors.customer_name ? 'border-red-500' : 'border-slate-300',
+              ]"
             />
+            <p v-if="state.fieldErrors.customer_name" class="mt-1 text-xs text-red-600">
+              {{ state.fieldErrors.customer_name }}
+            </p>
           </div>
 
           <div>
@@ -83,19 +141,29 @@ async function submit() {
             <input
               v-model="form.email"
               type="email"
-              required
-              class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-slate-500 focus:outline-none"
+              :class="[
+                'w-full rounded-md border px-3 py-2 text-sm focus:border-slate-500 focus:outline-none',
+                state.fieldErrors.email ? 'border-red-500' : 'border-slate-300',
+              ]"
             />
+            <p v-if="state.fieldErrors.email" class="mt-1 text-xs text-red-600">
+              {{ state.fieldErrors.email }}
+            </p>
           </div>
 
           <div>
             <label class="mb-1 block text-xs font-medium text-slate-700">Shipping address</label>
             <textarea
               v-model="form.shipping_address"
-              required
               rows="3"
-              class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-slate-500 focus:outline-none"
+              :class="[
+                'w-full rounded-md border px-3 py-2 text-sm focus:border-slate-500 focus:outline-none',
+                state.fieldErrors.shipping_address ? 'border-red-500' : 'border-slate-300',
+              ]"
             />
+            <p v-if="state.fieldErrors.shipping_address" class="mt-1 text-xs text-red-600">
+              {{ state.fieldErrors.shipping_address }}
+            </p>
           </div>
 
           <div>
