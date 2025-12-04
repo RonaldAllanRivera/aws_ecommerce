@@ -393,7 +393,11 @@ Single public GitHub repository (for example, `aws-ecommerce-microservices`).
    - [COMPLETED] Implement the `place-order` endpoint: create order, snapshot product data, handle a mock payment provider and set order status.
    - [COMPLETED] Publish `OrderCreated` messages to the SQS queue (logical `order-events` queue) with a summarized order payload.
    - [COMPLETED] Integrate Filament 4 for orders and payments (list, filter, view details, basic delete actions) with host-based Livewire routing per service.
-   - Add tests for cart behavior, order creation and SQS event publishing (place-order feature tests added; broader cart and admin coverage still pending).
+   - [COMPLETED] Add automated tests for cart behavior, order creation and SQS event publishing:
+     - [COMPLETED] Feature tests for `POST /checkout/api/place-order` covering the happy path, price-change validation and out-of-stock scenarios (see `CheckoutPlaceOrderTest`).
+     - [COMPLETED] Feature tests for cart lifecycle endpoints (`POST/GET /checkout/api/cart`, `POST/PUT/DELETE /checkout/api/cart/items`) including validation errors and edge cases (empty cart, invalid quantity, missing product), implemented in `CartApiTest`.
+     - [COMPLETED] End-to-end style assertion that a successful order creation dispatches the `SendOrderCreatedMessage` job with the expected queue and payload structure, implemented by strengthening the happy-path assertions in `CheckoutPlaceOrderTest`.
+     - [COMPLETED] Feature tests for `GET /checkout/api/orders/{orderNumber}` to verify the public order summary contract (status, totals, items, payment snapshot), implemented in `OrderSummaryTest`.
 
 5. **Email service implementation**
    - Configure the Email service to consume messages from the SQS `order-events` queue using Laravel queues.

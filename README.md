@@ -388,11 +388,16 @@ Details are described more thoroughly in `PLAN.md` and will be refined as implem
 
 ## 9. Testing Strategy
 
-Planned testing approach:
+Testing approach (current status: Catalog and Checkout backend tests implemented; frontend and CI tests are planned):
 
 - **Backend (each Laravel service)**
   - Unit tests for core domain logic (pricing, inventory checks, order creation, email triggers).
   - Feature tests for key endpoints (cart flow, place order, email dispatch via queue).
+  - Current coverage includes:
+    - Catalog APIs (product listing, detail, search).
+    - Checkout cart lifecycle APIs (`/checkout/api/cart`, `/checkout/api/cart/items`), including validation edge cases (see `CartApiTest` in the Checkout service).
+    - Checkout `POST /checkout/api/place-order` happy path and failure scenarios, with `SendOrderCreatedMessage` SQS job dispatch assertions (see `CheckoutPlaceOrderTest`).
+    - Checkout order summary endpoint `GET /checkout/api/orders/{orderNumber}` (see `OrderSummaryTest`).
 
 - **Frontend (Vue)**
   - Component tests (e.g. Vitest) for cart, product list, and checkout components.

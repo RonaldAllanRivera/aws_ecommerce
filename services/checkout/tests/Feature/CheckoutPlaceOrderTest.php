@@ -83,7 +83,18 @@ class CheckoutPlaceOrderTest extends TestCase
 
         $this->assertSame('checked_out', $cart->fresh()->status);
 
-        Queue::assertPushed(SendOrderCreatedMessage::class, 1);
+        Queue::assertPushed(SendOrderCreatedMessage::class, function (SendOrderCreatedMessage $job) use ($payload) {
+            $this->assertSame('order-events', $job->queue);
+
+            $this->assertSame($payload['order_number'], $job->payload['order_number'] ?? null);
+            $this->assertSame($payload['email'], $job->payload['email'] ?? null);
+            $this->assertSame($payload['total'], $job->payload['total'] ?? null);
+
+            $this->assertIsArray($job->payload['items'] ?? null);
+            $this->assertGreaterThan(0, count($job->payload['items']));
+
+            return true;
+        });
     }
 
     public function test_place_order_fails_when_price_has_changed(): void
