@@ -1,6 +1,16 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
+
+## 2025-12-04
+
+### Added
+- Filament 4 admin resources for Checkout `Order` and `Payment` models, with read-focused list, filter, detailed view, and delete actions.
+- `CheckoutDemoSeeder` to create demo orders, items, and payments for local admin testing.
+
+### Changed
+- Nginx configuration and Checkout/Catalog `.env` settings to use host-based routing (`catalog.localhost`, `checkout.localhost`) and separate session cookies per service, resolving Livewire checksum issues between the Catalog and Checkout Filament panels.
+
 ## 2025-12-03
 
 ### Added

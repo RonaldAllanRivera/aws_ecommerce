@@ -392,7 +392,7 @@ Single public GitHub repository (for example, `aws-ecommerce-microservices`).
    - [COMPLETED] Integrate with the Catalog service to validate prices at checkout time using SKU-based product lookups and snapshots.
    - [COMPLETED] Implement the `place-order` endpoint: create order, snapshot product data, handle a mock payment provider and set order status.
    - [COMPLETED] Publish `OrderCreated` messages to the SQS queue (logical `order-events` queue) with a summarized order payload.
-   - Integrate Filament 4 for orders and payments (list, filter, view details).
+   - [COMPLETED] Integrate Filament 4 for orders and payments (list, filter, view details, basic delete actions) with host-based Livewire routing per service.
    - Add tests for cart behavior, order creation and SQS event publishing (place-order feature tests added; broader cart and admin coverage still pending).
 
 5. **Email service implementation**

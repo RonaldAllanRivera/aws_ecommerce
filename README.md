@@ -1,8 +1,8 @@
 # AWS E-commerce Microservices (Laravel 12 + Vue 3)
 
-Reference implementation for a Senior Full-Stack Engineer test assignment.
+A production-style, cloud-ready e-commerce platform featuring microservice architecture, SPA frontend, asynchronous messaging, and infrastructure-as-code deployment.
 
-This project implements an online e-commerce system using three Laravel-based microservices and a Vue 3 SPA frontend, running in Docker on a single AWS EC2 instance with infrastructure provisioned via AWS CloudFormation.
+The system is built from three Laravel 12 microservices (Catalog, Checkout, Email) and a Vue 3 SPA frontend, all containerized with Docker and designed to run on a single AWS EC2 instance with infrastructure managed via AWS CloudFormation.
 
 ---
 
@@ -249,7 +249,7 @@ Running `php artisan db:seed` will create or update the admin user accordingly.
 
 These are for local development only and must be changed for any shared or deployed environment.
 
-Filament's default panel path is `/admin` per service. In the Docker-based local environment, the Catalog admin panel is available at `http://localhost:8080/catalog/admin` behind Nginx.
+Filament's default panel path is `/admin` per service. In the Docker-based local environment, the Catalog admin panel is available at `http://catalog.localhost:8080/admin` and the Checkout admin panel is available at `http://checkout.localhost:8080/admin`.
 
 ---
 
@@ -292,11 +292,11 @@ This will:
 Once the stack is running, the main local endpoints are:
 
 - Catalog service
-  - App: `http://localhost:8080/catalog/`
-  - Health: `http://localhost:8080/catalog/health`
+  - App: `http://catalog.localhost:8080/catalog/`
+  - Health: `http://catalog.localhost:8080/catalog/health`
 - Checkout service
-  - App: `http://localhost:8080/checkout/`
-  - Health: `http://localhost:8080/checkout/health`
+  - App: `http://checkout.localhost:8080/checkout/`
+  - Health: `http://checkout.localhost:8080/checkout/health`
 - Email service
   - App: `http://localhost:8080/email/`
   - Health: `http://localhost:8080/email/health`
@@ -356,6 +356,11 @@ As part of Phase 4, the Checkout service exposes JSON APIs via Nginx:
   - `GET /checkout/api/orders/{orderNumber}` – retrieve an order summary and payment details.
 
 Cart items and orders use canonical pricing and product names resolved from the Catalog service via SKU-based lookups, and snapshot these values into `CartItem` and `OrderItem` records. The `place-order` endpoint revalidates prices and available stock against the Catalog service before creating an order and payment, and on success dispatches an `OrderCreated` message to the logical `order-events` queue for the Email service to consume. In the Docker-based local environment, Checkout uses Laravel's `sync` queue driver and logs to stderr so you can see `OrderCreated` activity directly in container logs; in AWS this will be switched to SQS (and CloudWatch or file-based logging) via environment configuration.
+
+**Admin panel (Checkout)**
+
+- URL (Docker, local): `http://checkout.localhost:8080/checkout/admin`
+- Filament 4 resources for Orders and Payments with list views, filters, infolist-based detail views (including order items and payment info), and delete actions (row, bulk, and view header).
 
 ---
 
