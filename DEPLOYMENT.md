@@ -108,6 +108,7 @@ Very short version (details belong in `infra/cloudformation` templates and ops d
 1. **Provision infrastructure** via CloudFormation:
    - VPC / subnet / security group.
    - EC2 instance with IAM role (access to SQS, SES, SSM).
+   - In this repo, these are implemented for the local/test environment by `infra/cloudformation/networking.yml` (VPC, subnet, security group) and `infra/cloudformation/compute.yml` (single Free Tier-eligible EC2 Docker host).
 2. **On EC2**, install Docker + Docker Compose, clone this repo.
 3. **Fetch configuration** from SSM (DB creds, SES/MAIL_*, SQS URLs) into environment.
 4. Run:

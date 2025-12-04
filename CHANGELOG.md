@@ -19,10 +19,12 @@ All notable changes to this project will be documented in this file.
 - Frontend Axios configuration and CORS/host-based routing adjustments to support `http://localhost:5173` calling `http://localhost:8080` (Catalog) and `http://checkout.localhost:8080` (Checkout) in the Docker-based local environment.
 - Inventory-aware out-of-stock UX in the Vue SPA, driven by Catalog `inventory.quantity_available` (including a sample product seeded with zero stock), disabling new adds while still allowing removal from the cart.
 - Checkout UX improvements: client-side form validation, clearer error messages for out-of-stock, price-change and payment failures, and automatic redirect from the Checkout page back to the Cart page on stock/price validation errors.
+- CloudFormation templates for Phase 7 networking and compute stacks (`infra/cloudformation/networking.yml` and `infra/cloudformation/compute.yml`) provisioning a minimal VPC, public subnet, security group and a single Free Tier-eligible `t3.micro` EC2 Docker host with Docker and Docker Compose bootstrapped via user data.
 
 ### Changed
 - Nginx configuration and Checkout/Catalog `.env` settings to use host-based routing (`catalog.localhost`, `checkout.localhost`) and separate session cookies per service, resolving Livewire checksum issues between the Catalog and Checkout Filament panels.
 - Docker Compose + Nginx configuration to optionally serve the built Vue SPA from `frontend/dist` on `http://localhost:8080` while proxying `/catalog/*` and `/checkout/*` API calls to the respective Laravel services.
+- Updated `PLAN.md`, `README.md` and `DEPLOYMENT.md` to describe the Phase 7 networking and compute stacks and the single-EC2 Docker host deployment flow.
 
 ## 2025-12-03
 

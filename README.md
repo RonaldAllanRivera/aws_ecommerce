@@ -93,7 +93,7 @@ aws_ecommerce/
 ├─ README.md               # This file
 ├─ docker-compose.yml      # (Phase 2) Local dev stack
 ├─ infra/
-│  └─ cloudformation/      # (Planned) AWS infrastructure templates
+│  └─ cloudformation/      # AWS infrastructure templates (networking, EC2 Docker host, app stack planned)
 ├─ services/
 │  ├─ catalog/             # Laravel 12 app – Catalog microservice
 │  ├─ checkout/            # Laravel 12 app – Checkout microservice
@@ -404,11 +404,11 @@ AWS deployment is designed to stay within the AWS Free Tier:
 - **Config/Secrets**: SSM Parameter Store for DB credentials, app keys, and other configuration.
 - **Infrastructure as Code**: CloudFormation templates under `infra/cloudformation/` (networking, EC2 + Docker, SQS, IAM roles and permissions).
 
-Deployment flow (once templates are in place):
+Deployment flow (current Phase 7 status: networking and compute stacks implemented):
 
 1. Build and push Docker images (or build directly on EC2).
-2. Deploy/update CloudFormation stacks for networking and compute.
-3. Deploy/update application stack (SQS, IAM, SES-related config).
+2. Deploy/update CloudFormation stacks for networking and compute (see `infra/cloudformation/networking.yml` and `infra/cloudformation/compute.yml`).
+3. Deploy/update application stack (SQS, IAM, SES-related config) once implemented.
 4. Start Docker Compose on the EC2 instance.
 
 Details are described more thoroughly in `PLAN.md` and will be refined as implementation progresses. For SES/SQS configuration details for the Email service, see `DEPLOYMENT.md`.

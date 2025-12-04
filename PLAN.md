@@ -414,11 +414,12 @@ Single public GitHub repository (for example, `aws-ecommerce-microservices`).
    - [COMPLETED] Build the production Vue bundle and configure Nginx in Docker to serve the SPA from `frontend/dist` on `http://localhost:8080` while proxying Catalog and Checkout API calls.
 
 7. **AWS infrastructure and deployment**
-   - Author CloudFormation templates for networking, compute database (single EC2 with Docker and MySQL container) and application stack (SQS queue, IAM roles and SES permissions).
-   - Deploy the networking stack (or configure the default VPC and security groups for the EC2 instance).
-   - Provision the EC2 instance via CloudFormation with an IAM role, user data that installs Docker and Docker Compose, and security groups.
-   - Deploy the application stack for SQS and IAM, then configure the Laravel services to read their configuration from SSM Parameter Store.
-   - Build and push Docker images (or build them directly on EC2) and start the Docker Compose stack on the instance.
+   - [COMPLETED] Author CloudFormation templates for networking and compute (single EC2 with Docker and MySQL container) using a Free Tier-eligible `t3.micro` host.
+   - [TODO] Author a CloudFormation template for the application stack (SQS queue, IAM roles and SES permissions).
+   - [COMPLETED] Deploy the networking stack (or configure the default VPC and security groups for the EC2 instance).
+   - [COMPLETED] Provision the EC2 instance via CloudFormation with an IAM role, user data that installs Docker and Docker Compose, and security groups.
+   - [TODO] Deploy the application stack for SQS and IAM, then configure the Laravel services to read their configuration from SSM Parameter Store.
+   - [TODO] Build and push Docker images (or build them directly on EC2) and start the Docker Compose stack on the instance.
 
 8. **Hardening and polish**
    - Refine validation, error handling and logging across services.
