@@ -9,6 +9,11 @@ All notable changes to this project will be documented in this file.
 - `CheckoutDemoSeeder` to create demo orders, items, and payments for local admin testing.
 - Feature tests for Checkout cart lifecycle and validation rules, and the public order summary endpoint (see `CartApiTest` and `OrderSummaryTest` in the Checkout service).
 - Strengthened Checkout `CheckoutPlaceOrderTest` to assert `SendOrderCreatedMessage` is dispatched to the `order-events` queue with a realistic payload.
+- Email service `EmailLog` model and `email_logs` table for logging email sending attempts and results.
+- Email service `OrderConfirmationMail` Mailable and `emails.order-confirmation` Blade view for rendering order confirmation emails.
+- Email service `ProcessOrderCreated` job to consume `OrderCreated` payloads, send confirmation emails, and write `EmailLog` entries.
+- Feature test coverage for the Email service `ProcessOrderCreated` job (see `ProcessOrderCreatedTest`).
+- `DEPLOYMENT.md` documenting how to switch from Mailhog to SES/SQS in AWS, including environment variable examples for the Email service.
 
 ### Changed
 - Nginx configuration and Checkout/Catalog `.env` settings to use host-based routing (`catalog.localhost`, `checkout.localhost`) and separate session cookies per service, resolving Livewire checksum issues between the Catalog and Checkout Filament panels.

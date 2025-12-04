@@ -382,7 +382,7 @@ Deployment flow (once templates are in place):
 3. Deploy/update application stack (SQS, IAM, SES-related config).
 4. Start Docker Compose on the EC2 instance.
 
-Details are described more thoroughly in `PLAN.md` and will be refined as implementation progresses.
+Details are described more thoroughly in `PLAN.md` and will be refined as implementation progresses. For SES/SQS configuration details for the Email service, see `DEPLOYMENT.md`.
 
 ---
 
@@ -398,6 +398,7 @@ Testing approach (current status: Catalog and Checkout backend tests implemented
     - Checkout cart lifecycle APIs (`/checkout/api/cart`, `/checkout/api/cart/items`), including validation edge cases (see `CartApiTest` in the Checkout service).
     - Checkout `POST /checkout/api/place-order` happy path and failure scenarios, with `SendOrderCreatedMessage` SQS job dispatch assertions (see `CheckoutPlaceOrderTest`).
     - Checkout order summary endpoint `GET /checkout/api/orders/{orderNumber}` (see `OrderSummaryTest`).
+    - Email service `ProcessOrderCreated` job for order confirmation emails and logging (see `ProcessOrderCreatedTest`).
 
 - **How to run backend tests locally**
 

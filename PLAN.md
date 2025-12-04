@@ -400,11 +400,11 @@ Single public GitHub repository (for example, `aws-ecommerce-microservices`).
      - [COMPLETED] Feature tests for `GET /checkout/api/orders/{orderNumber}` to verify the public order summary contract (status, totals, items, payment snapshot), implemented in `OrderSummaryTest`.
 
 5. **Email service implementation**
-   - Configure the Email service to consume messages from the SQS `order-events` queue using Laravel queues.
-   - Implement Blade templates for order confirmation emails (HTML and text).
-   - Integrate with SES for sending emails in the AWS environment, and with Mailhog for local development.
-   - Log email sending attempts and results to `email_db.email_logs`.
-   - Add tests to verify that an `OrderCreated` message results in a correctly rendered email and a log entry.
+   - [COMPLETED] Introduce an `EmailLog` model and `email_logs` table to record email sending attempts and results (type, recipient, order number, payload snapshot, status, error message, sent at).
+   - [COMPLETED] Implement an order confirmation Mailable (`OrderConfirmationMail`) and Blade view (`emails.order-confirmation`) for HTML order confirmation emails.
+   - [COMPLETED] Implement a `ProcessOrderCreated` queue job that consumes `OrderCreated` payloads (from the logical `order-events` queue), sends order confirmation emails and writes `EmailLog` entries.
+   - [COMPLETED] Add feature tests to verify that processing an `OrderCreated` payload results in a sent email and a corresponding `EmailLog` record (see `ProcessOrderCreatedTest` in the Email service).
+   - [COMPLETED] Document how to wire the Email service to use the real SQS `order-events` queue and SES mailer configuration in the AWS environment (local Docker remains Mailhog + Redis queues), including environment examples in `DEPLOYMENT.md`.
 
 6. **Frontend implementation**
    - Set up Vue Router, layout components and base pages (home, product list, product detail, cart, checkout, order confirmation).
