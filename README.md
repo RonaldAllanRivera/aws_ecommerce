@@ -399,6 +399,22 @@ Testing approach (current status: Catalog and Checkout backend tests implemented
     - Checkout `POST /checkout/api/place-order` happy path and failure scenarios, with `SendOrderCreatedMessage` SQS job dispatch assertions (see `CheckoutPlaceOrderTest`).
     - Checkout order summary endpoint `GET /checkout/api/orders/{orderNumber}` (see `OrderSummaryTest`).
 
+- **How to run backend tests locally**
+
+  From the project root, with the Docker stack running:
+
+  ```bash
+  docker compose exec checkout-app php artisan test
+  ```
+
+  To run all Laravel backend tests:
+
+  ```bash
+  docker compose exec catalog-app php artisan test
+  docker compose exec checkout-app php artisan test
+  docker compose exec email-app php artisan test
+  ```
+
 - **Frontend (Vue)**
   - Component tests (e.g. Vitest) for cart, product list, and checkout components.
   - End-to-end tests (e.g. Playwright or Cypress) for full checkout flow.
