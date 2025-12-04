@@ -52,8 +52,10 @@ The system is built from three Laravel 12 microservices (Catalog, Checkout, Emai
 
 - **Vue 3 + Vite SPA**
   - Public pages: home, product list, product detail, cart, checkout, order confirmation.
-  - Uses Axios to call Catalog and Checkout APIs.
-  - Uses Pinia for catalog and cart state (planned in later phases).
+  - Uses Axios to call Catalog and Checkout APIs via Nginx:
+    - Catalog: `http://localhost:8080/catalog/api/*` in Docker.
+    - Checkout: `http://checkout.localhost:8080/checkout/api/*` in Docker.
+  - Uses Pinia for catalog and cart state, including cart token persistence and shared Add/Remove-from-cart UX between the product grid and product detail pages.
 
 ### 2.3 Data & Infrastructure
 
@@ -302,6 +304,31 @@ Once the stack is running, the main local endpoints are:
   - Health: `http://localhost:8080/email/health`
 - Mailhog UI
   - `http://localhost:8025`
+
+### 7.5 SPA frontend (Vue 3, Phase 6 – implemented)
+
+For local development, the Vue dev server runs separately from Docker:
+
+- Dev server: `http://localhost:5173`
+- Backend APIs (via Docker + Nginx):
+  - Catalog: `http://localhost:8080/catalog/api/*`
+  - Checkout: `http://checkout.localhost:8080/checkout/api/*`
+
+Configure the frontend environment in `frontend/.env`:
+
+```dotenv
+VITE_API_BASE_URL=http://localhost:8080
+VITE_CHECKOUT_API_BASE_URL=http://checkout.localhost:8080
+```
+
+Make sure your hosts file maps the Docker Nginx hosts:
+
+```text
+127.0.0.1  catalog.localhost
+127.0.0.1  checkout.localhost
+```
+
+In production, the built SPA will be served by Nginx on the same origin as the APIs, so CORS can be restricted to that origin.
 
 ### 7.2 Running migrations and seeders against MySQL
 

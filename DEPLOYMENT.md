@@ -120,4 +120,33 @@ Very short version (details belong in `infra/cloudformation` templates and ops d
    - Verify sender and recipient emails.
    - Watch CloudWatch logs and `email_logs` table for delivery status.
 
-Keep this file as the single place to remind you how to flip from **Mailhog** to **SES + SQS** safely.
+---
+
+## 5. Frontend (Vue SPA) deployment on EC2
+
+The Vue SPA is built with Vite and served by the same Nginx instance that fronts the Laravel services.
+
+1. On your workstation or CI, build the frontend:
+
+   ```bash
+   cd frontend
+   npm install
+   npm run build
+   ```
+
+2. Copy the built assets (`frontend/dist`) into the Nginx container image or mount them into a directory that Nginx serves as the web root (for example `/var/www/frontend`).
+
+3. Configure Nginx on EC2 so that:
+   - `/` and SPA routes serve the built `index.html` from the Vue build.
+   - API routes proxy to the Laravel services (for example `/catalog/*`, `/checkout/*`).
+
+4. Set the frontend environment for production builds so Axios points at the EC2 host (same origin as Nginx):
+
+   ```dotenv
+   VITE_API_BASE_URL=https://your-ec2-host-or-domain
+   VITE_CHECKOUT_API_BASE_URL=https://your-ec2-host-or-domain
+   ```
+
+   In this topology, CORS can be locked down to that single origin, and the Email service still uses SES/SQS as described above.
+
+Keep this file as the single place to remind you how to flip from **Mailhog** to **SES + SQS** safely and how to host the SPA alongside the Laravel services.
