@@ -13,65 +13,31 @@ class CatalogSampleDataSeeder extends Seeder
 {
     public function run(): void
     {
-        $categories = [
-            'Electronics' => 'electronics',
-            'Books' => 'books',
-            'Clothing' => 'clothing',
+        // Minimal seed for EC2: 1 in-stock product, 1 out-of-stock product
+        $categoryModels = [
+            'demo' => Category::updateOrCreate(
+                ['slug' => 'demo'],
+                ['name' => 'Demo']
+            ),
         ];
-
-        $categoryModels = [];
-
-        foreach ($categories as $name => $slug) {
-            $categoryModels[$slug] = Category::updateOrCreate(
-                ['slug' => $slug],
-                ['name' => $name],
-            );
-        }
 
         $products = [
             [
-                'sku' => 'ELEC-001',
-                'name' => 'Wireless Headphones',
-                'description' => 'Comfortable over-ear wireless headphones with noise isolation.',
-                'price' => 99.99,
+                'sku' => 'DEMO-001',
+                'name' => 'Demo Widget',
+                'description' => 'In-stock demo product.',
+                'price' => 9.99,
                 'status' => 'active',
-                'categories' => ['electronics'],
-                'quantity_available' => 50,
+                'categories' => ['demo'],
+                'quantity_available' => 10,
             ],
             [
-                'sku' => 'ELEC-002',
-                'name' => '4K Monitor 27"',
-                'description' => '27-inch 4K IPS display ideal for development and design work.',
-                'price' => 299.00,
+                'sku' => 'DEMO-002',
+                'name' => 'Sold Out Widget',
+                'description' => 'Out-of-stock demo product.',
+                'price' => 7.50,
                 'status' => 'active',
-                'categories' => ['electronics'],
-                'quantity_available' => 20,
-            ],
-            [
-                'sku' => 'BOOK-001',
-                'name' => 'Laravel 12 in Action',
-                'description' => 'Hands-on guide to building modern Laravel applications.',
-                'price' => 39.00,
-                'status' => 'active',
-                'categories' => ['books'],
-                'quantity_available' => 100,
-            ],
-            [
-                'sku' => 'BOOK-002',
-                'name' => 'Mastering Vue 3',
-                'description' => 'Deep dive into the Vue 3 composition API and real-world patterns.',
-                'price' => 42.50,
-                'status' => 'active',
-                'categories' => ['books'],
-                'quantity_available' => 80,
-            ],
-            [
-                'sku' => 'CLOTH-001',
-                'name' => 'Unisex Developer T-Shirt',
-                'description' => 'Soft cotton t-shirt with a subtle code-themed print.',
-                'price' => 24.99,
-                'status' => 'active',
-                'categories' => ['clothing'],
+                'categories' => ['demo'],
                 'quantity_available' => 0,
             ],
         ];

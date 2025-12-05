@@ -173,6 +173,46 @@ In that case, it is safe to **reboot the instance** from the AWS console:
 
 Rebooting this way does not destroy the EBS volume; your Docker images, containers (with `restart: unless-stopped`) and source code on the instance will persist.
 
+### 4.3 Transferring vendor/dist archives via .tar.gz (PowerShell → EC2)
+
+On Windows (PowerShell), you can bundle large folders (like Laravel `vendor` or `frontend/dist`) into `.tar.gz` archives and copy them to EC2 using `scp`.
+
+On your workstation, from the repo root:
+
+```powershell
+cd E:\laragon\www\aws_ecommerce
+
+# 1) Create archives
+tar -czf catalog-vendor.tar.gz -C services\catalog vendor
+tar -czf checkout-vendor.tar.gz -C services\checkout vendor
+tar -czf email-vendor.tar.gz -C services\email vendor
+tar -czf frontend-dist.tar.gz -C frontend dist
+
+# 2) Copy archives to EC2 (adjust key path and host as needed)
+scp -i "E:\accounts\aws\aws-ecommerce-key.pem" `
+    catalog-vendor.tar.gz checkout-vendor.tar.gz email-vendor.tar.gz frontend-dist.tar.gz `
+    ec2-user@3.92.42.238:~/aws_ecommerce/
+```
+
+On the EC2 instance (over SSH), extract the archives into the correct directories:
+
+```bash
+cd ~/aws_ecommerce
+
+# 1) Extract Laravel vendor folders
+tar -xzf catalog-vendor.tar.gz -C services/catalog
+tar -xzf checkout-vendor.tar.gz -C services/checkout
+tar -xzf email-vendor.tar.gz -C services/email
+
+# 2) Extract frontend dist
+tar -xzf frontend-dist.tar.gz -C frontend
+
+# 3) (Optional) Remove archives to save disk space
+rm *.tar.gz
+```
+
+The `.gitignore` in this repo already ignores `*.tar.gz`, so these bundles are never committed to Git.
+
 ---
 
 ## 5. Frontend (Vue SPA) deployment on EC2
@@ -181,7 +221,11 @@ The Vue SPA is built with Vite and served by the same Nginx instance that fronts
 
 1. On your workstation or CI, build the frontend:
 
-   ```bash
+```bash
+cd frontend
+npm install
+npm run build
+```
    cd frontend
    npm install
    npm run build

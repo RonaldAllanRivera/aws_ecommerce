@@ -12,46 +12,25 @@ class CheckoutDemoSeeder extends Seeder
 {
     public function run(): void
     {
-        // Simple deterministic demo data: 2 orders, each with items and a payment.
+        // Minimal demo data for EC2: 1 paid order with a single line item
         $orders = [
             [
-                'order_number' => Str::upper(Str::random(12)),
+                'order_number' => 'DEMO-ORDER-1',
                 'user_id' => null,
-                'email' => 'demo1@example.com',
-                'customer_name' => 'Demo Customer 1',
+                'email' => 'demo@example.com',
+                'customer_name' => 'Demo Customer',
                 'shipping_address' => '123 Demo Street, Demo City',
                 'shipping_method' => 'Standard',
                 'status' => 'paid',
-                'subtotal' => 100.00,
-                'tax' => 10.00,
-                'shipping' => 5.00,
-                'total' => 115.00,
+                'subtotal' => 19.98,
+                'tax' => 0.00,
+                'shipping' => 0.00,
+                'total' => 19.98,
                 'items' => [
                     [
                         'product_id' => 1,
-                        'product_name_snapshot' => 'Demo Product A',
-                        'unit_price_snapshot' => 50.00,
-                        'quantity' => 2,
-                    ],
-                ],
-            ],
-            [
-                'order_number' => Str::upper(Str::random(12)),
-                'user_id' => null,
-                'email' => 'demo2@example.com',
-                'customer_name' => 'Demo Customer 2',
-                'shipping_address' => '456 Example Road, Sample Town',
-                'shipping_method' => 'Express',
-                'status' => 'paid',
-                'subtotal' => 60.00,
-                'tax' => 6.00,
-                'shipping' => 0.00,
-                'total' => 66.00,
-                'items' => [
-                    [
-                        'product_id' => 2,
-                        'product_name_snapshot' => 'Demo Product B',
-                        'unit_price_snapshot' => 30.00,
+                        'product_name_snapshot' => 'Demo Widget',
+                        'unit_price_snapshot' => 9.99,
                         'quantity' => 2,
                     ],
                 ],
