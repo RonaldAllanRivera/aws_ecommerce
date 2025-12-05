@@ -213,6 +213,36 @@ rm *.tar.gz
 
 The `.gitignore` in this repo already ignores `*.tar.gz`, so these bundles are never committed to Git.
 
+### 4.4 Creating Filament admin users on EC2 (Option A)
+
+Once containers are running on EC2, you can create admin users for the Filament panels directly inside the `catalog-app` and `checkout-app` containers.
+
+On EC2 (over SSH):
+
+```bash
+cd ~/aws_ecommerce
+
+# Catalog admin user (for http://<ec2-host>/catalog/admin)
+sudo docker-compose -f docker-compose.yml -f docker-compose.aws.yml \
+  exec catalog-app php artisan make:filament-user
+
+# Checkout admin user (for http://<ec2-host>/checkout/admin)
+sudo docker-compose -f docker-compose.yml -f docker-compose.aws.yml \
+  exec checkout-app php artisan make:filament-user
+```
+
+For each command, Laravel will prompt you for:
+
+- Name (for example `Catalog Admin`, `Checkout Admin`)
+- Email (for example `jaeron.rivera@gmail.com`, `jaeron_rivera@yahoo.com`)
+- Password (for example `123456789`)
+- Whether the user is an admin (`yes`)
+
+After creating the users:
+
+- Catalog panel: `http://<ec2-host>/catalog/admin/login`
+- Checkout panel: `http://<ec2-host>/checkout/admin/login`
+
 ---
 
 ## 5. Frontend (Vue SPA) deployment on EC2
