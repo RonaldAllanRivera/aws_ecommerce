@@ -1,0 +1,66 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Application stack for aws_ecommerce (SQS order-events + IAM/SES permissions)
+
+Parameters:
+  ProjectName:
+    Type: String
+    Default: aws-ecommerce
+    Description: Project name prefix used for tagging and cross-stack exports.
+
+  OrderEventsQueueName:
+    Type: String
+    Default: order-events
+    Description: Logical name of the SQS queue for OrderCreated messages.
+
+Resources:
+  OrderEventsQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Ref OrderEventsQueueName
+      VisibilityTimeout: 30
+      MessageRetentionPeriod: 345600   # 4 days
+      ReceiveMessageWaitTimeSeconds: 10
+
+  Ec2AppPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: !Sub "${ProjectName}-sqs-ses-app-policy"
+      Roles:
+        - Fn::ImportValue: !Sub "${ProjectName}-Ec2RoleName"
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: AllowSendToOrderEvents
+            Effect: Allow
+            Action:
+              - sqs:SendMessage
+            Resource: !GetAtt OrderEventsQueue.Arn
+
+          - Sid: AllowConsumeOrderEvents
+            Effect: Allow
+            Action:
+              - sqs:ReceiveMessage
+              - sqs:DeleteMessage
+              - sqs:GetQueueAttributes
+              - sqs:GetQueueUrl
+            Resource: !GetAtt OrderEventsQueue.Arn
+
+          - Sid: AllowSesSend
+            Effect: Allow
+            Action:
+              - ses:SendEmail
+              - ses:SendRawEmail
+            Resource: "*"
+
+Outputs:
+  OrderEventsQueueUrl:
+    Description: URL of the order-events SQS queue
+    Value: !Ref OrderEventsQueue
+    Export:
+      Name: !Sub "${ProjectName}-OrderEventsQueueUrl"
+
+  OrderEventsQueueNameOut:
+    Description: Name of the order-events SQS queue
+    Value: !GetAtt OrderEventsQueue.QueueName
+    Export:
+      Name: !Sub "${ProjectName}-OrderEventsQueueName"

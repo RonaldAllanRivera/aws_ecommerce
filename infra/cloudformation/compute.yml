@@ -106,3 +106,9 @@ Outputs:
   InstancePublicDnsName:
     Description: Public DNS name of the EC2 instance
     Value: !GetAtt AppInstance.PublicDnsName
+
+  Ec2RoleName:
+    Description: Logical name of the IAM role attached to the EC2 instance
+    Value: !Ref Ec2Role
+    Export:
+      Name: !Sub "${ProjectName}-Ec2RoleName"
