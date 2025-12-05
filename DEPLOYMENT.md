@@ -114,12 +114,37 @@ Very short version (details belong in `infra/cloudformation` templates and ops d
 4. Run:
 
    ```bash
-   docker compose up -d --build
+   sudo docker-compose -f docker-compose.yml -f docker-compose.aws.yml up -d --build
    ```
 
 5. Configure SES identities and test sending:
    - Verify sender and recipient emails.
    - Watch CloudWatch logs and `email_logs` table for delivery status.
+
+### 4.1 EC2 SSH commands (cheat sheet)
+
+From your workstation (replace the key path and host with your own values):
+
+```bash
+ssh -i /path/to/aws-ecommerce-key.pem ec2-user@your-ec2-public-dns
+```
+
+On EC2, first deployment:
+
+```bash
+cd ~
+git clone https://github.com/RonaldAllanRivera/aws_ecommerce.git
+cd aws_ecommerce
+sudo docker-compose -f docker-compose.yml -f docker-compose.aws.yml up -d --build
+```
+
+On EC2, updating to the latest code:
+
+```bash
+cd ~/aws_ecommerce
+git pull origin main
+sudo docker-compose -f docker-compose.yml -f docker-compose.aws.yml up -d --build
+```
 
 ---
 
