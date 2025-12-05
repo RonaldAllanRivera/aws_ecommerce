@@ -13,31 +13,68 @@ class CatalogSampleDataSeeder extends Seeder
 {
     public function run(): void
     {
-        // Minimal seed for EC2: 1 in-stock product, 1 out-of-stock product
-        $categoryModels = [
-            'demo' => Category::updateOrCreate(
-                ['slug' => 'demo'],
-                ['name' => 'Demo']
-            ),
+        // Seed demo catalog data: 5 products (one out of stock) across 5 categories
+        $categoryDefinitions = [
+            'electronics' => 'Electronics',
+            'books' => 'Books',
+            'clothing' => 'Clothing',
+            'home-office' => 'Home & Office',
+            'accessories' => 'Accessories',
         ];
+
+        $categoryModels = [];
+
+        foreach ($categoryDefinitions as $slug => $name) {
+            $categoryModels[$slug] = Category::updateOrCreate(
+                ['slug' => $slug],
+                ['name' => $name],
+            );
+        }
 
         $products = [
             [
                 'sku' => 'DEMO-001',
-                'name' => 'Demo Widget',
-                'description' => 'In-stock demo product.',
-                'price' => 9.99,
+                'name' => 'Wireless Mouse',
+                'description' => 'Compact wireless mouse suitable for everyday use.',
+                'price' => 19.99,
                 'status' => 'active',
-                'categories' => ['demo'],
-                'quantity_available' => 10,
+                'categories' => ['electronics', 'accessories'],
+                'quantity_available' => 25,
             ],
             [
                 'sku' => 'DEMO-002',
-                'name' => 'Sold Out Widget',
-                'description' => 'Out-of-stock demo product.',
-                'price' => 7.50,
+                'name' => 'Mechanical Keyboard',
+                'description' => 'Tactile mechanical keyboard ideal for developers.',
+                'price' => 59.00,
                 'status' => 'active',
-                'categories' => ['demo'],
+                'categories' => ['electronics', 'home-office'],
+                'quantity_available' => 15,
+            ],
+            [
+                'sku' => 'DEMO-003',
+                'name' => 'Laravel 12 Handbook',
+                'description' => 'Concise reference for building APIs and backends with Laravel 12.',
+                'price' => 29.00,
+                'status' => 'active',
+                'categories' => ['books'],
+                'quantity_available' => 40,
+            ],
+            [
+                'sku' => 'DEMO-004',
+                'name' => 'Developer Hoodie',
+                'description' => 'Warm hoodie with a subtle code print.',
+                'price' => 39.99,
+                'status' => 'active',
+                'categories' => ['clothing'],
+                'quantity_available' => 20,
+            ],
+            [
+                'sku' => 'DEMO-005',
+                'name' => 'Sold Out Mug',
+                'description' => 'Ceramic mug printed with "while(true){code();}" – currently out of stock.',
+                'price' => 12.50,
+                'status' => 'active',
+                'categories' => ['home-office', 'accessories'],
                 'quantity_available' => 0,
             ],
         ];
