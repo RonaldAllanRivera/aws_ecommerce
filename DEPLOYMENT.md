@@ -277,4 +277,62 @@ npm run build
 
    In this topology, CORS can be locked down to that single origin, and the Email service still uses SES/SQS as described above.
 
-Keep this file as the single place to remind you how to flip from **Mailhog** to **SES + SQS** safely and how to host the SPA alongside the Laravel services.
+### 4.5 Filament admin URLs and Livewire routing on EC2
+
+Once the Docker stack is running on EC2 via:
+
+```bash
+sudo docker-compose -f docker-compose.yml -f docker-compose.aws.yml up -d --build
+```
+
+the Filament admin panels live at:
+
+- Catalog admin: `http://<ec2-host>/catalog/admin`
+- Checkout admin: `http://<ec2-host>/checkout/admin`
+
+The Docker Nginx configuration under `docker/nginx/nginx.conf` is responsible for routing:
+
+- `/catalog/*` to the `catalog_app` PHP-FPM container.
+- `/checkout/*` to the `checkout_app` PHP-FPM container.
+- `/` and SPA routes to the built Vue frontend in `/var/www/frontend`.
+
+Because both Catalog and Checkout use Filament + Livewire, the default `server` block (used when you access the site via the raw EC2 host instead of `catalog.localhost` / `checkout.localhost`) also needs to send `/livewire` requests to the correct Laravel service. This is handled via a small `map` of the `Referer` header and a shared `/livewire` location, for example:
+
+```nginx
+map $http_referer $livewire_upstream {
+    default       checkout_app:9000;
+    ~*/catalog/   catalog_app:9000;
+}
+
+server {
+    listen 80 default_server;
+    # ...
+
+    location /livewire/ {
+        include fastcgi_params;
+        fastcgi_pass $livewire_upstream;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME /var/www/html/public/index.php;
+        fastcgi_param SCRIPT_NAME /index.php;
+    }
+}
+```
+
+For local development you can continue to use host-based routing (`catalog.localhost`, `checkout.localhost`), where each host has its own `/livewire` location pointing directly at the appropriate app container.
+
+If you ever see a `Livewire\Mechanisms\HandleComponents\CorruptComponentPayloadException` on an admin page in AWS:
+
+- First, check inside the relevant container that `APP_KEY` from `config('app.key')`, `env('APP_KEY')` and the `.env` file all match.
+- Then clear Laravel caches inside that container:
+
+  ```bash
+  docker-compose exec <service> php artisan optimize:clear
+  docker-compose exec <service> php artisan view:clear
+  docker-compose exec <service> php artisan config:clear
+  docker-compose exec <service> php artisan cache:clear
+  docker-compose exec <service> php artisan route:clear
+  ```
+
+Replace `<service>` with `catalog-app` or `checkout-app` as appropriate. After clearing caches and reloading Nginx, retry the admin login in a new private/incognito browser window.
+
+Keep this file as the single place to remind you how to flip from **Mailhog** to **SES + SQS** safely and how to host the SPA and Filament admin panels alongside the Laravel services on EC2.

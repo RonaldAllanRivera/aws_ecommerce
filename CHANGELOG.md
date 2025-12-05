@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2025-12-05
+
+### Fixed
+- Resolved `Livewire\Mechanisms\HandleComponents\CorruptComponentPayloadException` errors on the Checkout and Catalog Filament admin login pages in the EC2 environment by ensuring consistent `APP_KEY` values inside the containers, clearing Laravel caches, and adjusting Nginx routing so that `/livewire` requests from Catalog and Checkout pages are sent to the correct Laravel service.
+
+### Changed
+- Updated Nginx `default_server` configuration to use a small `map` on the `Referer` header for `/livewire` requests when accessing the site via the raw EC2 host, keeping `catalog.localhost` and `checkout.localhost` host-based routing as-is for local development.
+- Verified that both Filament admin panels are reachable on EC2 at `/catalog/admin` and `/checkout/admin` behind the Dockerized Nginx reverse proxy.
+- Updated `README.md`, `PLAN.md`, and `DEPLOYMENT.md` to reference the EC2 admin URLs and document the Livewire/Nginx routing behavior.
+
 ## 2025-12-04
 
 ### Added

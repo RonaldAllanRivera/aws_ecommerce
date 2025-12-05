@@ -404,12 +404,12 @@ AWS deployment is designed to stay within the AWS Free Tier:
 - **Config/Secrets**: SSM Parameter Store for DB credentials, app keys, and other configuration.
 - **Infrastructure as Code**: CloudFormation templates under `infra/cloudformation/` (networking, EC2 + Docker, SQS, IAM roles and permissions).
 
-Deployment flow (current Phase 7 status: networking and compute stacks implemented):
+Deployment flow (current Phase 7 status: networking, compute, and the Docker stack running on a single EC2 instance; SQS/IAM application stack still TODO):
 
 1. Build and push Docker images (or build directly on EC2).
 2. Deploy/update CloudFormation stacks for networking and compute (see `infra/cloudformation/networking.yml` and `infra/cloudformation/compute.yml`).
 3. Deploy/update application stack (SQS, IAM, SES-related config) once implemented.
-4. Start Docker Compose on the EC2 instance.
+4. Start Docker Compose on the EC2 instance and verify that the Vue SPA and Filament admin panels are reachable at `/catalog/admin` and `/checkout/admin` on the EC2 host via Nginx.
 
 Details are described more thoroughly in `PLAN.md` and will be refined as implementation progresses. For SES/SQS configuration details for the Email service, see `DEPLOYMENT.md`.
 

@@ -419,7 +419,7 @@ Single public GitHub repository (for example, `aws-ecommerce-microservices`).
    - [COMPLETED] Deploy the networking stack (or configure the default VPC and security groups for the EC2 instance).
    - [COMPLETED] Provision the EC2 instance via CloudFormation with an IAM role, user data that installs Docker and Docker Compose, and security groups.
    - [TODO] Deploy the application stack for SQS and IAM, then configure the Laravel services to read their configuration from SSM Parameter Store.
-   - [TODO] Build and push Docker images (or build them directly on EC2) and start the Docker Compose stack on the instance.
+   - [COMPLETED] Build or transfer Docker artifacts, start the Docker Compose stack on the instance, and verify that the Vue SPA and both Filament admin panels (`/catalog/admin`, `/checkout/admin`) are reachable behind Nginx on the single EC2 host.
 
 8. **Hardening and polish**
    - Refine validation, error handling and logging across services.
