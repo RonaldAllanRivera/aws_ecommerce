@@ -3,3 +3,6 @@
 
 # VS Code Configuration
 **/.vscode/
+
+# Archive bundles for EC2 transfers
+*.tar.gz

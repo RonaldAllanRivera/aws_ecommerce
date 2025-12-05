@@ -146,6 +146,33 @@ git pull origin main
 sudo docker-compose -f docker-compose.yml -f docker-compose.aws.yml up -d --build
 ```
 
+### 4.2 SSH troubleshooting and rebooting the instance
+
+From your workstation, a normal SSH command looks like:
+
+```powershell
+ssh -i "E:\accounts\aws\aws-ecommerce-key.pem" ec2-user@3.92.42.238
+```
+
+If you see errors like:
+
+- `kex_exchange_identification: read: Connection reset`
+- `Connection reset by 3.92.42.238 port 22`
+
+but `Test-NetConnection 3.92.42.238 -Port 22` reports `TcpTestSucceeded : True`, the issue is usually on the EC2 side (sshd or a transient instance problem), not your local network.
+
+In that case, it is safe to **reboot the instance** from the AWS console:
+
+1. Go to **EC2 → Instances** in the AWS console (correct region, for example `us-east-1`).
+2. Select the instance created by the `aws-ecommerce-compute` stack.
+3. Choose **Instance state → Reboot instance** and confirm.
+4. Wait until:
+   - `Instance state` is `running`.
+   - `Status check` shows `3/3 checks passed`.
+5. Re-run the SSH command from your terminal.
+
+Rebooting this way does not destroy the EBS volume; your Docker images, containers (with `restart: unless-stopped`) and source code on the instance will persist.
+
 ---
 
 ## 5. Frontend (Vue SPA) deployment on EC2
