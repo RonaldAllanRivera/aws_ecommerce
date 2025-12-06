@@ -1,6 +1,5 @@
 # Environment configuration
 **/.env
-**/.env.production
 
 # VS Code Configuration
 **/.vscode/
