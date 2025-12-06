@@ -2,3 +2,23 @@ services:
   nginx:
     ports:
       - "80:80"
+
+  checkout-app:
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+      APP_URL: http://3.92.42.238/checkout
+      QUEUE_CONNECTION: sqs
+      SQS_PREFIX: https://sqs.us-east-1.amazonaws.com/435415984628
+      SQS_QUEUE: order-events
+      AWS_DEFAULT_REGION: us-east-1
+
+  email-app:
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+      APP_URL: http://3.92.42.238/email
+      QUEUE_CONNECTION: sqs
+      SQS_PREFIX: https://sqs.us-east-1.amazonaws.com/435415984628
+      SQS_QUEUE: order-events
+      AWS_DEFAULT_REGION: us-east-1
