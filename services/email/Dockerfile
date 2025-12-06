@@ -23,6 +23,7 @@ WORKDIR /var/www/html
 
 COPY . /var/www/html
 
+ENV COMPOSER_PROCESS_TIMEOUT=1200
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
 CMD ["php-fpm"]
