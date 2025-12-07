@@ -81,7 +81,7 @@ The system is built from three Laravel 12 microservices (Catalog, Checkout, Emai
 - **Database**: MySQL (containerized), SQLite for quick local bootstrapping.
 - **Messaging & Email**: AWS SQS, AWS SES.
 - **Infra**: Docker, Docker Compose, AWS EC2, AWS CloudFormation, AWS SSM Parameter Store.
-- **Tooling**: Composer, Node.js + npm, GitHub Actions (planned).
+- **Tooling**: Composer, Node.js + npm. The repository structure reserves space for GitHub Actions workflows for CI/CD, but automated pipelines are outside the scope of this test implementation.
 
 ---
 
@@ -93,13 +93,13 @@ aws_ecommerce/
 ├─ README.md               # This file
 ├─ docker-compose.yml      # (Phase 2) Local dev stack
 ├─ infra/
-│  └─ cloudformation/      # AWS infrastructure templates (networking, EC2 Docker host, app stack planned)
+│  └─ cloudformation/      # AWS infrastructure templates (networking, EC2 Docker host)
 ├─ services/
 │  ├─ catalog/             # Laravel 12 app – Catalog microservice
 │  ├─ checkout/            # Laravel 12 app – Checkout microservice
 │  └─ email/               # Laravel 12 app – Email microservice
 ├─ frontend/               # Vue 3 + Vite SPA
-└─ .github/workflows/      # (Planned) CI/CD pipelines
+└─ .github/workflows/      # Placeholder for optional CI/CD workflows
 ```
 
 Refer to `PLAN.md` for a more detailed breakdown of responsibilities and APIs.
@@ -404,12 +404,11 @@ AWS deployment is designed to stay within the AWS Free Tier:
 - **Config/Secrets**: SSM Parameter Store for DB credentials, app keys, and other configuration.
 - **Infrastructure as Code**: CloudFormation templates under `infra/cloudformation/` (networking, EC2 + Docker, SQS, IAM roles and permissions).
 
-Deployment flow (current Phase 7 status: networking, compute, and the Docker stack running on a single EC2 instance, with SES + SQS wired manually for a single AWS account; a dedicated CloudFormation application stack for SQS/IAM/SES is still TODO):
+Deployment flow (current Phase 7 status: networking, compute, and the Docker stack running on a single EC2 instance, with SES + SQS wired manually for a single AWS account):
 
 1. Build and push Docker images (or build directly on EC2).
 2. Deploy/update CloudFormation stacks for networking and compute (see `infra/cloudformation/networking.yml` and `infra/cloudformation/compute.yml`).
-3. Deploy/update application stack (SQS, IAM, SES-related config) once implemented. In the current test deployment, the `order-events` queue, SES verified sender email, and EC2 IAM inline policies were created manually.
-4. Start Docker Compose on the EC2 instance and verify that the Vue SPA and Filament admin panels are reachable at `/catalog/admin` and `/checkout/admin` on the EC2 host via Nginx.
+3. On the EC2 host, create the `order-events` SQS queue, SES verified sender email and EC2 IAM inline policies (as described in `DEPLOYMENT.md`) and start Docker Compose, then verify that the Vue SPA and Filament admin panels are reachable at `/catalog/admin` and `/checkout/admin` on the EC2 host via Nginx.
 
 Details are described more thoroughly in `PLAN.md` and will be refined as implementation progresses. For SES/SQS configuration details for the Email service, see `DEPLOYMENT.md`.
 
@@ -463,7 +462,7 @@ In the current EC2 deployment, the Email service on the `email-app` container se
 
 ## 9. Testing Strategy
 
-Testing approach (current status: Catalog and Checkout backend tests implemented; frontend and CI tests are planned):
+Testing approach (Catalog and Checkout backend tests implemented; frontend and CI test automation are outside the scope of this assignment but can be added later):
 
 - **Backend (each Laravel service)**
   - Unit tests for core domain logic (pricing, inventory checks, order creation, email triggers).
@@ -522,4 +521,4 @@ Implementation is tracked in `PLAN.md`. High-level phases:
    - Optional Elasticsearch/OpenSearch-based catalog search.
    - Monitoring, logging, and CI/CD.
 
-This README focuses on the current state and the roadmap so that reviewers can understand both what is implemented and what is planned next.
+This README focuses on the current state and the roadmap so that reviewers can quickly understand what is implemented and how the system is intended to evolve.
