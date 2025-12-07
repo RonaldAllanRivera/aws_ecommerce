@@ -64,6 +64,40 @@ Notes:
 - In **SES sandbox**, you also need to **verify the recipient addresses** you test with.
 - Prefer to store these values in **SSM Parameter Store** (or Secrets Manager) and load them into the container at runtime, rather than baking them into `.env` in the repo.
 
+### 2.3 Current EC2 SES configuration (Dec 2025)
+
+The current test deployment on the single EC2 Docker host uses SES with:
+
+```dotenv
+MAIL_MAILER=ses
+MAIL_FROM_ADDRESS="jaeron.rivera@gmail.com"
+MAIL_FROM_NAME="AWS E-commerce"
+AWS_DEFAULT_REGION=us-east-1
+```
+
+- The sender address is a **verified SES email identity** in `us-east-1`.
+- The EC2 instance role (for example, `aws-ecommerce-compute-Ec2Role-…`) has an inline policy that allows `ses:SendEmail`, `ses:SendRawEmail`, and `ses:SendTemplatedEmail` on that identity.
+- No access key or secret is configured in `.env` on EC2; the AWS SDK uses the instance role credentials.
+
+Example inline policy snippet for SES (replace `<your-account-id>` with your account ID):
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ses:SendEmail",
+        "ses:SendRawEmail",
+        "ses:SendTemplatedEmail"
+      ],
+      "Resource": "arn:aws:ses:us-east-1:<your-account-id>:identity/jaeron.rivera@gmail.com"
+    }
+  ]
+}
+```
+
 Example SSM parameter names (you can change these):
 
 - `/aws-ecommerce/email/MAIL_FROM_ADDRESS`
@@ -93,11 +127,21 @@ docker compose exec email-app php artisan queue:work --queue=order-events
 
 ### 3.2 AWS / SQS
 
-Later, in production-like AWS:
+In the current EC2 deployment:
 
-- Set `QUEUE_CONNECTION=sqs` for the Email service.
-- Provide `SQS_QUEUE` / `AWS` credentials via env/SSM.
-- Ensure the queue name/URL matches the one Checkout publishes `OrderCreated` to (`order-events`).
+- The Checkout and Email services both run with `QUEUE_CONNECTION=sqs`.
+- `SQS_PREFIX` is set to `https://sqs.us-east-1.amazonaws.com/<your-account-id>` and `SQS_QUEUE` is `order-events`.
+- `AWS_DEFAULT_REGION` is `us-east-1`.
+- The EC2 instance role is granted `sqs:SendMessage`, `sqs:ReceiveMessage`, `sqs:DeleteMessage`, `sqs:GetQueueAttributes`, and `sqs:GetQueueUrl` on the `order-events` queue.
+
+On a small `t3.micro` host it is safer to run **short-lived** queue workers instead of a permanent `queue:work` process. For example, to drain all pending jobs and then exit:
+
+```bash
+sudo docker-compose -f docker-compose.yml -f docker-compose.aws.yml \
+  exec email-app php artisan queue:work sqs --queue=order-events --tries=1 --stop-when-empty
+```
+
+You can also use `--once` to process a single job manually after placing a test order.
 
 ---
 

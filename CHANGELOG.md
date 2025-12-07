@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2025-12-07
+
+### Added
+- Configured the Email service on the EC2 Docker host to send real order confirmation emails via AWS SES using a verified Gmail identity and the EC2 instance IAM role (no access keys), verified end-to-end from the `ProcessOrderCreated` job.
+- Added the `aws/aws-sdk-php` dependency to the Email and Checkout services so Laravel can use the SES mailer and SQS queue driver in the AWS environment.
+- Created the `order-events` SQS queue in `us-east-1` and wired the Checkout service to publish `SendOrderCreatedMessage` jobs to this queue when running on EC2.
+
+### Changed
+- Updated `docker-compose.aws.yml` to set `QUEUE_CONNECTION=sqs` and the `SQS_PREFIX`, `SQS_QUEUE`, and `AWS_DEFAULT_REGION` environment variables for `checkout-app` and `email-app` when running in AWS.
+- Expanded `README.md`, `PLAN.md`, and `DEPLOYMENT.md` with SES/SQS configuration details, an example IAM inline policy for the EC2 role (SES send + SQS send/receive), and notes on running short-lived queue workers on a `t3.micro` host to avoid CPU starvation.
+
 ## 2025-12-05
 
 ### Fixed

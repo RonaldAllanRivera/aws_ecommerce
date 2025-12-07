@@ -404,14 +404,60 @@ AWS deployment is designed to stay within the AWS Free Tier:
 - **Config/Secrets**: SSM Parameter Store for DB credentials, app keys, and other configuration.
 - **Infrastructure as Code**: CloudFormation templates under `infra/cloudformation/` (networking, EC2 + Docker, SQS, IAM roles and permissions).
 
-Deployment flow (current Phase 7 status: networking, compute, and the Docker stack running on a single EC2 instance; SQS/IAM application stack still TODO):
+Deployment flow (current Phase 7 status: networking, compute, and the Docker stack running on a single EC2 instance, with SES + SQS wired manually for a single AWS account; a dedicated CloudFormation application stack for SQS/IAM/SES is still TODO):
 
 1. Build and push Docker images (or build directly on EC2).
 2. Deploy/update CloudFormation stacks for networking and compute (see `infra/cloudformation/networking.yml` and `infra/cloudformation/compute.yml`).
-3. Deploy/update application stack (SQS, IAM, SES-related config) once implemented.
+3. Deploy/update application stack (SQS, IAM, SES-related config) once implemented. In the current test deployment, the `order-events` queue, SES verified sender email, and EC2 IAM inline policies were created manually.
 4. Start Docker Compose on the EC2 instance and verify that the Vue SPA and Filament admin panels are reachable at `/catalog/admin` and `/checkout/admin` on the EC2 host via Nginx.
 
 Details are described more thoroughly in `PLAN.md` and will be refined as implementation progresses. For SES/SQS configuration details for the Email service, see `DEPLOYMENT.md`.
+
+### 8.1 Verifying order confirmation emails on EC2
+
+In the current EC2 deployment, the Email service on the `email-app` container sends real order confirmation emails via SES and logs each attempt in the `email_logs` table.
+
+1. Ensure the Email service environment on EC2 includes (either in `.env` or via `docker-compose.aws.yml` overrides):
+
+   ```dotenv
+   MAIL_MAILER=ses
+   MAIL_FROM_ADDRESS="jaeron.rivera@gmail.com"      # SES-verified Gmail
+   MAIL_FROM_NAME="AWS E-commerce"
+
+   QUEUE_CONNECTION=sqs
+   SQS_PREFIX=https://sqs.us-east-1.amazonaws.com/<your-account-id>
+   SQS_QUEUE=order-events
+   AWS_DEFAULT_REGION=us-east-1
+   ```
+
+2. To run a one-off SES connectivity test from `email-app`:
+
+   ```bash
+   sudo docker-compose -f docker-compose.yml -f docker-compose.aws.yml \
+     exec email-app php artisan tinker
+   ```
+
+   ```php
+   dispatch_sync(new \App\Jobs\ProcessOrderCreated([
+       'order_number' => 'TEST-SES-XXX',
+       'email' => 'your-verified-gmail@example.com',
+   ]));
+   ```
+
+   Then query the latest log entry:
+
+   ```php
+   \App\Models\EmailLog::latest()->first();
+   ```
+
+3. For normal orders placed via the SPA in AWS, the Checkout service publishes `SendOrderCreatedMessage` jobs to the `order-events` SQS queue. On a small `t3.micro` host it is recommended to run **short-lived** workers instead of a permanently running `queue:work` process:
+
+   ```bash
+   sudo docker-compose -f docker-compose.yml -f docker-compose.aws.yml \
+     exec email-app php artisan queue:work sqs --queue=order-events --tries=1 --stop-when-empty
+   ```
+
+   This command drains any pending `order-events` jobs and then exits, which is friendlier to CPU credits on the Free Tier instance while still delivering queued order confirmation emails.
 
 ---
 

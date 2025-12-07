@@ -420,6 +420,7 @@ Single public GitHub repository (for example, `aws-ecommerce-microservices`).
    - [COMPLETED] Provision the EC2 instance via CloudFormation with an IAM role, user data that installs Docker and Docker Compose, and security groups.
    - [TODO] Deploy the application stack for SQS and IAM, then configure the Laravel services to read their configuration from SSM Parameter Store.
    - [COMPLETED] Build or transfer Docker artifacts, start the Docker Compose stack on the instance, and verify that the Vue SPA and both Filament admin panels (`/catalog/admin`, `/checkout/admin`) are reachable behind Nginx on the single EC2 host.
+   - [NOTE] For the current test deployment, the `order-events` SQS queue, SES verified sender identity (`jaeron.rivera@gmail.com`), and EC2 IAM inline policies for SES and SQS were created and applied manually rather than via a dedicated CloudFormation application stack. The application stack template and SSM-based configuration wiring remain future work.
 
 8. **Hardening and polish**
    - Refine validation, error handling and logging across services.
